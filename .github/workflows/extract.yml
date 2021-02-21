@@ -1,0 +1,25 @@
+name: Extract
+
+on: [push]
+
+jobs:
+  extract:
+    runs-on: macos-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        bundler-cache: true
+
+    - name: Extract images
+      run: |
+        bundle exec gemoji extract public/images/emoji
+        tar czf images.tar.gz -C public/images/emoji/unicode .
+
+    - uses: actions/upload-artifact@v2
+      with:
+        name: images.tar.gz
+        path: images.tar.gz
