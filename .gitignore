@@ -1,7 +1,6 @@
 /bin/*
 !/bin/gemoji
 .bundle
-Gemfile.lock
 db/emoji-test.txt
 db/ucd.nounihan.grouped.xml
 images/unicode/*.png
