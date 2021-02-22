@@ -54,9 +54,6 @@ module Emoji
       path = argv[0]
 
       Emoji::Extractor.new(size, path).extract!
-      Dir["#{Emoji.images_path}/*.png"].each do |png|
-        FileUtils.cp(png, File.join(path, File.basename(png)))
-      end
     end
 
     def usage_text
