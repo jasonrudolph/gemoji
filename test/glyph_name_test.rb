@@ -41,4 +41,14 @@ class GlyphTest < TestCase
       refute_predicate Emoji::Glyph.new(name), :skin_tone_modifier?
     end
   end
+
+  test "#image_filename for emoji female gender modifier" do
+    assert_equal '1f46f-2640.png', Emoji::Glyph.new('u1F46F.W').image_filename
+    assert_equal '1f46e-2640.png', Emoji::Glyph.new('u1F46E.0.W').image_filename
+  end
+
+  test "#image_filename for emoji male gender modifier" do
+    assert_equal '1f46f-2642.png', Emoji::Glyph.new('u1F46F.M').image_filename
+    assert_equal '1f46e-2642.png', Emoji::Glyph.new('u1F46E.0.M').image_filename
+  end
 end

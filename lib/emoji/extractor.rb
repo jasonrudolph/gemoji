@@ -32,22 +32,7 @@ module Emoji
 
         next if glyph.skin_tone_modifier?
 
-        # Strip out any neutral skin tone indicators
-        basename = glyph_name.sub(/\.0(\.[MW])?\z/, '')
-
-        # Translate gender codepoints
-        basename =
-          basename
-          .sub(/\.W\z/, '-2640')
-          .sub(/\.M\z/, '-2642')
-
-        # Strip out the unicode prefixes and join dashes instead of underscores
-        basename =
-          basename
-          .delete_prefix('u')
-          .sub('_u', '-').downcase
-
-        image_filename = "#{images_path}/#{basename}.png"
+        image_filename = "#{images_path}/#{glyph.image_filename}"
         FileUtils.mkdir_p(File.dirname(image_filename))
         File.open(image_filename, 'wb') { |f| f.write binread.call }
       end
