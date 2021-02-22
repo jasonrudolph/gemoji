@@ -1,4 +1,3 @@
-require 'emoji'
 require 'fileutils'
 
 module Emoji
@@ -28,11 +27,27 @@ module Emoji
 
     def extract!
       each do |glyph_name, type, binread|
-        if emoji = glyph_name_to_emoji(glyph_name)
-          image_filename = "#{images_path}/#{emoji.image_filename}"
-          FileUtils.mkdir_p(File.dirname(image_filename))
-          File.open(image_filename, 'wb') { |f| f.write binread.call }
-        end
+        # Skip skin tone variants
+        next if glyph_name.match?(/\.[1-5](\.[MW])?\z/)
+
+        # Strip out any neutral skin tone indicators
+        basename = glyph_name.sub(/\.0(\.[MW])?\z/, '')
+
+        # Translate gender codepoints
+        basename =
+          basename
+          .sub(/\.W\z/, '-2640')
+          .sub(/\.M\z/, '-2642')
+
+        # Strip out the unicode prefixes and join dashes instead of underscores
+        basename =
+          basename
+          .delete_prefix('u')
+          .sub('_u', '-').downcase
+
+        image_filename = "#{images_path}/#{basename}.png"
+        FileUtils.mkdir_p(File.dirname(image_filename))
+        File.open(image_filename, 'wb') { |f| f.write binread.call }
       end
     end
 
