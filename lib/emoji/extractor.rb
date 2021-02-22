@@ -56,38 +56,6 @@ module Emoji
     COUPLE = "1F491"
     KISS = "1F48F"
 
-    def glyph_name_to_emoji(glyph_name)
-      return if glyph_name =~ /\.[1-5]($|\.)/
-      zwj = Emoji::ZERO_WIDTH_JOINER
-      v16 = Emoji::VARIATION_SELECTOR_16
-
-      if glyph_name =~ /^u(#{FAMILY}|#{COUPLE}|#{KISS})\.([#{FAMILY_MAP.keys.join('')}]+)$/
-        if $1 == FAMILY ? $2 == "MWB" : $2 == "WM"
-          raw = [$1.hex].pack('U')
-        else
-          if $1 == COUPLE
-            middle = "#{zwj}\u{2764}#{v16}#{zwj}" # heavy black heart
-          elsif $1 == KISS
-            middle = "#{zwj}\u{2764}#{v16}#{zwj}\u{1F48B}#{zwj}" # heart + kiss mark
-          else
-            middle = zwj
-          end
-          raw = $2.split('').map { |c| FAMILY_MAP.fetch(c) }.join(middle)
-        end
-        candidates = [raw]
-      else
-        raw = glyph_name.gsub(/(^|_)u([0-9A-F]+)/) { ($1.empty?? $1 : zwj) + [$2.hex].pack('U') }
-        raw.sub!(/\.0\b/, '')
-        raw.sub!(/\.(#{GENDER_MAP.keys.join('|')})$/) { v16 + zwj + GENDER_MAP.fetch($1) }
-        candidates = [raw]
-        candidates << raw.sub(v16, '') if raw.include?(v16)
-        candidates << raw.gsub(zwj, '') if raw.include?(zwj)
-        candidates.dup.each { |c| candidates << (c + v16) }
-      end
-
-      candidates.map { |c| Emoji.find_by_unicode(c) }.compact.first
-    end
-
     # https://www.microsoft.com/typography/otspec/otff.htm
     def parse_ttc(io)
       header_name = io.read(4).unpack('a*')[0]
