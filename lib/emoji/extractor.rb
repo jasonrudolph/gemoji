@@ -1,4 +1,5 @@
 require 'fileutils'
+require 'emoji/glyph'
 
 module Emoji
   class Extractor
@@ -27,8 +28,9 @@ module Emoji
 
     def extract!
       each do |glyph_name, type, binread|
-        # Skip skin tone variants
-        next if glyph_name.match?(/\.[1-5](\.[MW])?\z/)
+        glyph = Glyph.new(glyph_name)
+
+        next if glyph.skin_tone_modifier?
 
         # Strip out any neutral skin tone indicators
         basename = glyph_name.sub(/\.0(\.[MW])?\z/, '')
