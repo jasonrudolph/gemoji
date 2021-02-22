@@ -51,4 +51,15 @@ class GlyphTest < TestCase
     assert_equal '1f46f-2642.png', Emoji::Glyph.new('u1F46F.M').image_filename
     assert_equal '1f46e-2642.png', Emoji::Glyph.new('u1F46E.0.M').image_filename
   end
+
+  test "#image_filename for unicode values with leading zeros" do
+    # ©️ (Copyright)
+    assert_equal 'a9.png', Emoji::Glyph.new('u00A9').image_filename
+
+    # ®️ (Registered)
+    assert_equal 'ae.png', Emoji::Glyph.new('u00AE').image_filename
+
+    # 0️⃣, 1️⃣, 2️⃣, and so on (Keycaps)
+    assert_equal '30-20e3.png', Emoji::Glyph.new('u0030_u20E3').image_filename
+  end
 end
